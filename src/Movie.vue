@@ -5,16 +5,16 @@
       <el-row>
         <el-col :span="18" :offset="3">
           <div class="grid-content">
-            <el-menu default-active="activeCenter" class="el-menu-demo" mode="horizontal" v-bind:router='true'>
-              <el-menu-item index="activeCenter" :route="{path: '/activeCenter'}">活动中心</el-menu-item>
-              <el-menu-item index="infoCenter" :route="{path: '/infoCenter'}">信息中心</el-menu-item>
+            <el-menu default-active="1" class="el-menu-demo" mode="horizontal" v-bind:router='true'>
+              <el-menu-item index="activeCenter">活动中心</el-menu-item>
+              <el-menu-item index="infoCenter">信息中心</el-menu-item>
              <!--  <el-submenu index="2">
                 <template slot="title">我的工作台</template>
                 <el-menu-item index="2-1">选项1</el-menu-item>
                 <el-menu-item index="2-2">选项2</el-menu-item>
                 <el-menu-item index="2-3">选项3</el-menu-item>
               </el-submenu> -->
-              <el-menu-item index="movieList" :route="{path: '/movieList'}">电影列表</el-menu-item>
+              <el-menu-item index="movieList">电影列表</el-menu-item>
             </el-menu>
           </div>
         </el-col>
@@ -26,9 +26,10 @@
       <el-row>
         <el-col :span="4">
           <div class="grid-content subTitle">
-              <el-menu default-active="publish" v-bind:router='true' class="el-menu-vertical-demo" theme="dark">
-                <el-menu-item index="publish" :route="{path: '/activeCenter/publish/1'}" >活动发布</el-menu-item>
-                <el-menu-item index="manage" :route="{path: '/activeCenter/manage'}">活动管理</el-menu-item>
+              <el-menu default-active="1" class="el-menu-vertical-demo" theme="dark">
+                <el-menu-item index="1">top10</el-menu-item>
+                <el-menu-item index="2">最热</el-menu-item>
+                <el-menu-item index="3">最信</el-menu-item>
               </el-menu>
           </div>
         </el-col>

@@ -43,7 +43,7 @@
     </el-form-item>
 </template>
 <script>
-import address from '../assets/js/adress'
+import address from '../../assets/js/adress'
 // 先得到省份
 function formDate (address) {
   var pro = []

@@ -16,7 +16,7 @@
               <el-input  v-model="ruleForm.name"></el-input>
             </el-form-item>
             <!-- 活动分类 -->
-            <el-form-item required label=''  style='margin-bottom: 0; line-height: 100%; padding-top: 10px;'>
+            <el-form-item required label='' prop='catogory' style='margin-bottom: 20px; line-height: 100%; padding-top: 10px;'>
               <el-row>
                 <el-col :span="3">
                   <div class='el-form-item'><label class="el-form-item__label">活动分类</label></div>
@@ -25,25 +25,25 @@
                   <el-button type="text" v-on:click='dialog.catogoryVisible = true'>设置</el-button>
                </el-col>
               </el-row>
-              <el-radio-group v-model="ruleForm.catogory">
+              <el-radio-group v-model="ruleForm.catogory" >
                 <el-radio v-for='catogory in ruleForm.catogoryS' :label='catogory.value'> {{ catogory.name }} </el-radio>
               </el-radio-group>
             </el-form-item>
             <!-- 活动标签 -->
-            <el-form-item required label='活动标签' >
+            <el-form-item required label='活动标签' prop='label'>
               <el-tag type="primary" :closable="true" v-for='item in ruleForm.label' v-on:close='removeLabel(item, ruleForm.label)' > {{ item.name }}</el-tag>
               <el-button type="primary" icon="plus" v-on:click='dialog.labelVisible=true'>添加</el-button>
             </el-form-item>
             <!-- 活动时间 -->
-            <el-form-item label="活动时间" required>
+            <el-form-item label="活动时间" required >
               <el-col :span="5">
-                <el-form-item>
+                <el-form-item prop='startDate'>
                   <el-date-picker type="date" placeholder="选择开始日期" v-model="ruleForm.startDate" style="width: 100%;"></el-date-picker>
                 </el-form-item>
               </el-col>
                <el-col :span="5" :offset='1'>
-                <el-form-item>
-                  <el-time-select
+                <el-form-item prop='startTime' >
+                  <el-time-picker
                       v-model="ruleForm.startTime"
                       :picker-options="{
                         start: '08:30',
@@ -51,12 +51,12 @@
                         end: '18:30'
                       }"
                       placeholder="选择开始时间">
-                    </el-time-select>
+                    </el-time-picker>
                 </el-form-item>
               </el-col>
               <el-col class="line" :span="2" style='text-align: center;'>-</el-col>
               <el-col :span="5">
-                <el-form-item>
+                <el-form-item prop='endDate'>
                    <el-date-picker
                       v-model="ruleForm.endDate"
                       type="date"
@@ -65,8 +65,8 @@
                 </el-form-item>
               </el-col>
                <el-col :span="5" :offset='1'>
-                <el-form-item>
-                  <el-time-select
+                <el-form-item prop='endTime'>
+                  <el-time-picker
                       v-model="ruleForm.endTime"
                       :picker-options="{
                         start: '08:30',
@@ -74,7 +74,7 @@
                         end: '18:30'
                       }"
                       placeholder="选择结束时间">
-                    </el-time-select>
+                    </el-time-picker>
                 </el-form-item>
               </el-col>
             </el-form-item>
@@ -171,6 +171,9 @@
 </template>
 <script>
 import region from './region'
+var Vue = require('vue')
+var VueResource = require('vue-resource')
+Vue.use(VueResource)
 export default {
   data () {
     return {
@@ -197,10 +200,22 @@ export default {
           { required: true, message: '请输入活动名称', trigger: 'blur' },
           { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
         ],
-        date1: [
+        catogory: [
+          { required: true, message: '请选择分类', trigger: 'change' }
+        ],
+        label: [
+          { type: 'array', required: true, message: '请至少添加一个标签', trigger: 'change' }
+        ],
+        startDate: [
           { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
         ],
-        date2: [
+        startTime: [
+          { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
+        ],
+        endDate: [
+          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+        ],
+        endTime: [
           { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
         ],
         type: [
@@ -230,6 +245,14 @@ export default {
         if (valid) {
           console.log(this.ruleForm)
           console.log('submit!')
+          this.$http.post('/test', this.ruleForm).then((response) => {
+            // success callback
+            console.log(response)
+          }, (response) => {
+            // error callback
+            console.log(response)
+          })
+          this.$router.push('/activeCenter/publish/2')
         } else {
           console.log('error submit!!')
           return false

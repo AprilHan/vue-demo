@@ -1,3 +1,3 @@
 <template>
-  <h1>我是step2</h1>
+  <h1>三</h1>
 </template>
