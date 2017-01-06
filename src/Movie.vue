@@ -5,16 +5,16 @@
       <el-row>
         <el-col :span="18" :offset="3">
           <div class="grid-content">
-            <el-menu default-active="1" class="el-menu-demo" mode="horizontal" v-bind:router='true'>
-              <el-menu-item index="activeCenter">活动中心</el-menu-item>
-              <el-menu-item index="infoCenter">信息中心</el-menu-item>
+            <el-menu default-active="/movieList" class="el-menu-demo" mode="horizontal" v-bind:router='true'>
+              <el-menu-item index="/activeCenter">活动中心</el-menu-item>
+              <el-menu-item index="/infoCenter/ask">信息中心</el-menu-item>
              <!--  <el-submenu index="2">
                 <template slot="title">我的工作台</template>
                 <el-menu-item index="2-1">选项1</el-menu-item>
                 <el-menu-item index="2-2">选项2</el-menu-item>
                 <el-menu-item index="2-3">选项3</el-menu-item>
               </el-submenu> -->
-              <el-menu-item index="movieList">电影列表</el-menu-item>
+              <el-menu-item index="/movieList">电影列表</el-menu-item>
             </el-menu>
           </div>
         </el-col>

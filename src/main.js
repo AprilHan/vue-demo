@@ -11,13 +11,10 @@ import Active from './Index'
 import Info from './Info'
 import Movie from './Movie'
 import Manage from './components/active/Manage'
-// import Demo from './components/active/demo'
 import step1 from './components/active/step1'
 import step2 from './components/active/step2'
 import step3 from './components/active/step3'
 import step4 from './components/active/step4'
-// 信息列表
-// import list from './components/info/list'
 Vue.use(ElementUI)
 Vue.use(VueRouter)
 const routes = [
@@ -55,6 +52,10 @@ const routes = [
   {
     path: '/infoCenter/:tab',
     component: Info
+  },
+  {
+    path: '/infoCenter',
+    redirect: '/infoCenter/ask'
   },
   {path: '/movieList', component: Movie},
   {path: '', redirect: '/activeCenter/publish/1'}

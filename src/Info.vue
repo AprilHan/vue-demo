@@ -1,21 +1,21 @@
 
 <template>
-  <div>
+  <div v-loading.body="loading">
     <!-- 头部 -->
     <header class='header'>
       <el-row>
         <el-col :span="18" :offset="3">
           <div class="grid-content">
-            <el-menu default-active="infoCenter" class="el-menu-demo" mode="horizontal" v-bind:router='true'>
-              <el-menu-item index="activeCenter">活动中心</el-menu-item>
-              <el-menu-item index="infoCenter">信息中心</el-menu-item>
+            <el-menu default-active="/infoCenter/ask" class="el-menu-demo" mode="horizontal" v-bind:router='true'>
+              <el-menu-item index="/activeCenter">活动中心</el-menu-item>
+              <el-menu-item index="/infoCenter/ask">信息中心</el-menu-item>
              <!--  <el-submenu index="2">
                 <template slot="title">我的工作台</template>
                 <el-menu-item index="2-1">选项1</el-menu-item>
                 <el-menu-item index="2-2">选项2</el-menu-item>
                 <el-menu-item index="2-3">选项3</el-menu-item>
               </el-submenu> -->
-              <el-menu-item index="movieList">电影列表</el-menu-item>
+              <el-menu-item index="/movieList">电影列表</el-menu-item>
             </el-menu>
           </div>
         </el-col>
@@ -27,7 +27,7 @@
       <el-row>
         <el-col :span="4">
           <div class="grid-content subTitle">
-              <el-menu default-active="ask" v-bind:router='true' class="el-menu-vertical-demo" theme="dark">
+              <el-menu :default-active="tab" v-bind:router='true' class="el-menu-vertical-demo" theme="dark">
                 <el-menu-item index="ask" :route= "{path: '/infoCenter/ask'}">问答</el-menu-item>
                 <el-menu-item index="job" :route= "{path: '/infoCenter/job'}">招聘</el-menu-item>
                 <el-menu-item index="good" :route= "{path: '/infoCenter/good'}">精华</el-menu-item>
@@ -37,25 +37,23 @@
         </el-col>
         <el-col :span="20">
           <div id="topic_list">
-      <div class='cell clearfix' v-for='list in lists'>
-        <a href="#" class='fl'><img :src='list.author.avatar_url' class='h30' alt=""></a>
-        <span><i title='回复数'>{{ list.reply_count }}</i><i>/</i><i title='阅读数'>{{ list.visit_count}}</i></span>
-        <a href="" class='fr'>
-          <span>{{ list.create_at | time}}</span>
-        </a>
-        <div class='inBlock'><a href="">{{ list.title }}</a></div>
-      </div>
-      <div class="block">
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage4"
-          :page-sizes="[5, 20, 30]"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="100">
-        </el-pagination>
-      </div>
-  </div>
+              <div class='cell clearfix' v-for='list in lists'>
+                <a href="#" class='fl'><img :src='list.author.avatar_url' class='h30' alt=""></a>
+                <span><i title='回复数'>{{ list.reply_count }}</i><i>/</i><i title='阅读数'>{{ list.visit_count}}</i></span>
+                <a href="" class='fr'>
+                  <span>{{ list.create_at | time}}</span>
+                </a>
+                <div class='inBlock'><a :href="'../static/demo.html?id='+ list.id">{{ list.title }}</a></div>
+              </div>
+              <div class="block">
+                <el-pagination
+                  @current-change="handleCurrentChange"
+                  :current-page="currentPage"
+                  layout="total, sizes, prev, pager, next, jumper"
+                  :total="totalPage">
+                </el-pagination>
+              </div>
+            </div>
         </el-col>
       </el-row>
     </section>
@@ -63,55 +61,81 @@
 </template>
 <script>
 import moment from 'moment'
-console.log(moment)
 export default {
   methods: {
-    handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
-    },
     handleCurrentChange (val) {
       this.currentPage = val
       console.log(`当前页: ${val}`)
+      this.currentPage = val
+      var flag = false
+      this.loading = true
+      this.fetchData(this.limit, this.currentPage, flag)
     },
-    fetchData () {
+    fetchData (limit, page, flag) {
       console.log(this.$route.params.tab)
       this.tab = this.$route.params.tab
-      this.currentPage4 = 3
-      // var _this = this
-      this.$http.get(`${this.root}/topics?tab=${this.tab}&limit=10`).then((res) => {
+      /*
+       *发送请求获取数据
+       *获取总页数
+       */
+      this.$http.get(`${this.root}/topics?tab=${this.tab}&limit=${limit}&page=${page}`).then((res) => {
         // 返回成功的回调
-        console.log(typeof res)
-
         if (res.status === 200) {
           this.lists = res.data.data
+          // 使用箭头函数 可以避免 _this = this 这样丑陋的代码
+          setTimeout(() => {
+            this.loading = false
+          }, 1000)
         }
       }, (res) => {
         // 错误处理回调
+        console.log(res)
       })
+      if (flag) {
+        console.log('执行...')
+        this.$http.get(`${this.root}/topics?tab=${this.tab}`).then((res) => {
+          // 返回成功的回调
+          if (res.status === 200) {
+            this.totalPage = res.data.data.length
+          }
+        }, (res) => {
+          // 错误处理回调
+          console.log(res)
+        })
+      }
     }
   },
   watch: {
     '$route' (to, from) {
-      this.currentPage4 = 1
-      this.fetchData()
+      this.currentPage = 1
+      this.tab = to
+      this.loading = true
+      // this.limit = 10
+      this.fetchData(this.limit, this.currentPage)
     }
   },
   data () {
     return {
       root: 'https://cnodejs.org/api/v1',
-      currentPage4: 1,
+      currentPage: 1,
       lists: [],
-      tab: this.$route.params.tab
+      tab: this.$route.params.tab,
+      totalPage: 0,
+      limit: 10,
+      loading: true
     }
   },
   created () {
-    this.fetchData()
+    var flag = true
+    this.fetchData(this.limit, this.currentPage, flag)
   },
   filters: {
     time: (val) => {
-      console.log(val)
+      /**
+       * 将时间格式化
+       * 返回中文格式
+       */
       var demo = moment(val).fromNow()
-      console.log(demo)
       var arr = demo.split(' ')
       if (arr[0] === 'a' || arr[0] === 'an') {
         arr[0] = 1
